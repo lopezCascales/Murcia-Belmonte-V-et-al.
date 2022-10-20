@@ -1,0 +1,61 @@
+R
+library(DESeq2)
+directory <- "/home/mayte/Escritorio/vero/COUNTS/both/12muestrasSERT"
+sampleFiles <- grep("*.txt",list.files(directory),value=TRUE)
+
+condition <- c('controlSA', 'controlSA', 'controlSA','controlSR', 'controlSR', 'controlSR', 'STR', 'STR', 'STR', 'STA', 'STA' )
+sampleTable <- data.frame(sampleName = sampleFiles,
+                       fileName = sampleFiles,
+                       condition = condition)
+ ddsHTSeq <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable,
+                                   directory = directory,
+                                   design= ~ condition)
+ head(ddsHTSeq)
+
+dds <- DESeq(ddsHTSeq)
+#contrast_BTRAPAxon <- c("condition", "BTA", "controlBA")
+contrast_STRAPAxon <- c("condition", "STA", "controlSA")
+vsd <- vst(dds, blind=FALSE)
+rld <- rlog(dds, blind=FALSE)
+head(assay(vsd), 3)
+ 
+sampleDists <- dist(t(assay(vsd)))
+
+ library("pheatmap")
+ pdf("sampledistances.pdf")
+ sampleDistMatrix <- as.matrix(sampleDists)
+ rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$type, sep="-")
+ colnames(sampleDistMatrix) <- NULL
+ colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+ pheatmap(sampleDistMatrix,
+          clustering_distance_rows=sampleDists,
+          clustering_distance_cols=sampleDists,
+         col=colors)
+ dev.off()
+
+ pdf("pca.pdf")
+plotPCA(vsd, intgroup=c("condition"))
+ dev.off()
+
+
+
+
+dds <- DESeqDataSetFromHTSeqCount( sampleTable = sampleTable, directory = directory, design= ~group)
+dds <- DESeq(dds)
+
+contrast_male <- c("group", "treated_male", "untreated_male")
+res_male <- results(dds, contrast = contrast_male, alpha = 0.05)
+contrast_female <- c("group", "treated_female", "untreated_female")
+res_female <- results(dds, contrast = contrast_female, alpha = 0.05)    
+class(res_male)
+
+resultsNames(dds)
+>> [1] "Intercept"
+>> [2] "group_treated_male_vs_untreated_female"
+>> [3] "group_untreated_female_vs_treated_female"
+>> [4] "group_untreated_male_vs_treated_female"
+
+res_male    
+>> log2 fold change (MAP): group treated_male vs untreated_male
+>> Wald test p-value: group treated_male vs untreated_male
+>> DataFrame with 21971 rows and 6 columns
