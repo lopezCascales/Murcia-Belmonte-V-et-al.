@@ -1,0 +1,70 @@
+El analisis actual esta hecho primero a traves de calcular los TPM(transcritos por millon),
+Se han filtrado los genes de expresión mas baja, para incrementar el poder estadístico. Mediante la funcion cpm (de edgeR)
+El paquete limma ofrece la función voom que normaliza los recuentos de lectura, y aplica un modelo lineal a los datos normalizados, antes de calcular las t-estadísticas moderadas de expresión diferencial, mediante la moderación empírica de Bayes de los errores estándar.
+Se pueden identificar genes DE significativos para una comparación particular seleccionando genes con un valor p menor que un valor de corte elegido padj < 0.1.
+La tabla esta ordenada aumentando el valor p ajustado, mostrando los genes DE más significativos en la parte superior.
+Se han unido los resultados de los genes cambiados por RPKM, y la ultima tabla obtenida, para seleccionar los candidatos en el Axon segun el tipo celular.
+
+candidatesTRAPAXON2 tabla 2020
+---------------------------------------------------
+Lo que hacemos primero es un analisis de RNAseq para detectar los genes expresados diferencialemente entre el TRAPseq y el control (DESeq), y poder asi descartar el background de genes (los genes que se downregulan), en cada uno de los tipos celulares (Sert y Brn3b). Despues se hace un analisis de expresion diferencial entrelas muestras de los Brn3bTRAPaxon vs SertTRAPaxon, descartando los genes que tenemos en el background (mediante un diagrama de venn). Y asi sacamos los genes exclusivos de cada tipo celular en TRAP. 
+
+--------------------------------------------------
+Cogemos los genes que son exclusivos de cada tipo celular (TRAPgenes), y hacemos un subset de cada bam con estos genes 
+samtools view -b -L regions.bed aligments.bam > subset.bam
+samtools view -b -L candidates.bed  myFile.bam > overlappingSpecificRegions.bam
+--------------------------------------------------
+y usamos el programa https://bioconductor.org/packages/devel/bioc/vignettes/APAlyzer/inst/doc/APAlyzer.html#about-apalyzer para 
+Apalyzer: a bioinformatics package for analysis of alternative polyadenylation isoforms 
+Ruijia Wang, Bin Tian
+Bioinformatics, Volume 36, Issue 12, 15 June 2020, Pages 3907–3909, https://doi.org/10.1093/bioinformatics/btaa266   
+
+--------------------------------------------------
+Ademas descargamos la lista de genes con 3'UTR y la lista de CPE, y las comparamos con nuestros genes, sacando asi aquellos candidatos que contienen CPE y secuencia 3'UTR. Entre esos genes detectamos 30 genes en Brn3b y 27 genes en Sert, entre los que se encuentran Gda y Rgs7bp que son los candidatos que se han comprobado.
+
+-------------------------------------------------
+Bed file
+Mus musculus: v2.0 (GRCm38.96)
+Date of release: 20/04/2020
+Total reads: 1,167,552,603
+
+3'-end sequencing libraries: 178
+See all contributing samples.
+
+Protocols: 3'READS, DRS, SAPAS, PAPERCLIP, 2P-Seq, PolyA-seq, PAS-Seq, A-seq, 3P-Seq
+Number of poly(A) site clusters: 301,006
+
+Percentage of clusters with poly(A) signal: 72
+List of poly(A) signals.
+
+Cluster annotations
+Terminal exon:	101,531
+Other exon:	13,079
+Intron:	58,184
+Downstream of terminal exon:	14,657
+Antisense exon:	4,386
+Antisense intron:	34,671
+Antisense upstream of a gene:	4,124
+Intergenic:	70,374
+
+The columns represent:
+
+first - chromosome name
+
+second and third - start and end positions of the poly(A) site cluster, respectively
+
+fourth - unique cluster ID, composed of the chromosome name, the representative poly(A) site of the cluster and the strand. Note that this ID format is inspired by UCSC's position format, which uses 1-based coordinates instead of the 0-based bed coordinates used in the second and third columns. Thus, to convert the position of the representative site to bed coordinates, subtract 1.
+
+fifth - average expression (tags per million, tpm) across all samples
+
+sixth - strand on which the cluster is encoded
+
+seventh - percentage of samples that support the particular cluster
+
+eighth - number of different 3' end sequencing protocols that support the particular cluster
+
+ninth - average expression (tags per million, tpm) across all samples
+
+tenth - two letter code for the cluster annotation (in order of decreasing priority: TE, terminal exon; EX, exonic; IN, intronic; DS, 1,000 nt downstream of an annotated terminal exon; AE, anti-sense to an exon; AI, anti-sense to an intron; AU, 1,000 nt upstream in anti-sense direction of a transcription start site; IG, intergenic)
+
+eleventh - information about the poly(A) signal(s) that are present upstream of the poly(A) site, including the motif, the location with respect to the cleavage site and the genomic coordinate
