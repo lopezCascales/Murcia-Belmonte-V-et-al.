@@ -1,0 +1,397 @@
+setwd('/media/angel/d82a0508-2962-4e4a-8aa0-f444e7cdf1f1/dropbox/Maite - Angel/Veronica/counts')
+
+datos1<-read.table("HTP19_Brn3bTRAP_Axones.txt",header=FALSE)
+datos2<-read.table("HTP20_Brn3bTRAP_Axones.txt",header=FALSE)
+datos3<-read.table("HTP21_Brn3bTRAP_Axones.txt",header=FALSE)
+datos4<-read.table("HTP11_Brn3bTRAP_Retina.txt",header=FALSE)
+datos5<-read.table("HTP12_Brn3bTRAP_Retina.txt",header=FALSE)
+datos6<-read.table("HTP13_Brn3bTRAP_Retina.txt",header=FALSE)
+datos7<-read.table("CtrlAxon_contralaterales_HTP26_.txt",header=FALSE)
+datos8<-read.table("CtrlAxon_contralaterales_HTP27_.txt",header=FALSE)
+datos9<-read.table("CtrlAxon_contralaterales_HTP28_.txt",header=FALSE)
+datos10<-read.table("CtrlAxones_ipsilaterales_HTP51_.txt",header=FALSE)
+datos11<-read.table("CtrlAxones_ipsilaterales_HTP52_.txt",header=FALSE)
+datos12<-read.table("CtrlAxones_ipsilaterales_HTP53_.txt",header=FALSE)
+datos13<-read.table("CtrlRetina_contralaterales_HTP23_.txt",header=FALSE)
+datos14<-read.table("CtrlRetina_contralaterales_HTP24_.txt",header=FALSE)
+datos15<-read.table("CtrlRetina_contralaterales_HTP25_.txt",header=FALSE)
+datos16<-read.table("CtrlRetina_ipsilaterales_HTP45_.txt",header=FALSE)
+datos17<-read.table("CtrlRetina_ipsilaterales_HTP46_.txt",header=FALSE)
+datos18<-read.table("CtrlRetina_ipsilaterales_HTP47_.txt",header=FALSE)
+datos19<-read.table("SertTRAP_ipsilaterales_Axones_HTP55_.txt",header=FALSE)
+datos20<-read.table("SertTRAP_ipsilaterales_Axones_HTP56_.txt",header=FALSE)
+datos21<-read.table("SertTRAP_ipsilaterales_Retina_HTP48_.txt",header=FALSE)
+datos22<-read.table("SertTRAP_ipsilaterales_Retina_HTP49_.txt",header=FALSE)
+datos23<-read.table("SertTRAP_ipsilaterales_Retina_HTP50_.txt",header=FALSE)
+
+names(datos1)[2]<-"Brn3bTRAP_CLs_Axon_HTP19"
+names(datos2)[2]<-"Brn3bTRAP_CLs_Axon_HTP20"
+names(datos3)[2]<-"Brn3bTRAP_CLs_Axon_HTP21"
+names(datos4)[2]<-"Brn3bTRAP_CLs_Retina_HTP11"
+names(datos5)[2]<-"Brn3bTRAP_CLs_Retina_HTP12"
+names(datos6)[2]<-"Brn3bTRAP_CLs_Retina_HTP13"
+names(datos7)[2]<-"Ctrl_BT_Axon_CLs_HTP26"
+names(datos8)[2]<-"Ctrl_BT_Axon_CLs_HTP27"
+names(datos9)[2]<-"Ctrl_BT_Axon_CLs_HTP28"
+names(datos10)[2]<-"Ctrl_ST_Axones_ILs_HTP51"
+names(datos11)[2]<-"Ctrl_ST_Axones_ILs_HTP52"
+names(datos12)[2]<-"Ctrl_ST_Axones_ILs_HTP53"
+names(datos13)[2]<-"Ctrl_BT_Retina_CLs_HTP23"
+names(datos14)[2]<-"Ctrl_BT_Retina_CLs_HTP24"
+names(datos15)[2]<-"Ctrl_BT_Retina_CLs_HTP25"
+names(datos16)[2]<-"Ctrl_ST_Retina_ILs_HTP45"
+names(datos17)[2]<-"Ctrl_ST_Retina_ILs_HTP46"
+names(datos18)[2]<-"Ctrl_ST_Retina_ILs_HTP47"
+names(datos19)[2]<-"SertTRAP_ILs_Axones_HTP55"
+names(datos20)[2]<-"SertTRAP_ILs_Axones_HTP56"
+names(datos21)[2]<-"SertTRAP_ILs_Retina_HTP48"
+names(datos22)[2]<-"SertTRAP_ILs_Retina_HTP49"
+names(datos23)[2]<-"SertTRAP_ILs_Retina_HTP50"
+
+names(datos1)[1]<-"Genes"
+names(datos2)[1]<-"Genes"
+names(datos3)[1]<-"Genes"
+names(datos4)[1]<-"Genes"
+names(datos5)[1]<-"Genes"
+names(datos6)[1]<-"Genes"
+names(datos7)[1]<-"Genes"
+names(datos8)[1]<-"Genes"
+names(datos9)[1]<-"Genes"
+names(datos10)[1]<-"Genes"
+names(datos11)[1]<-"Genes"
+names(datos12)[1]<-"Genes"
+names(datos13)[1]<-"Genes"
+names(datos14)[1]<-"Genes"
+names(datos15)[1]<-"Genes"
+names(datos16)[1]<-"Genes"
+names(datos17)[1]<-"Genes"
+names(datos18)[1]<-"Genes"
+names(datos19)[1]<-"Genes"
+names(datos20)[1]<-"Genes"
+names(datos21)[1]<-"Genes"
+names(datos22)[1]<-"Genes"
+names(datos23)[1]<-"Genes"
+
+
+datos<-datos1
+datos<-merge(datos,datos2,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos3,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos4,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos5,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos6,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos7,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos8,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos9,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos10,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos11,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos12,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos13,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos14,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos15,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos16,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos17,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos18,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos19,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos20,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos21,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos22,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+datos<-merge(datos,datos23,sort=FALSE,all.x=FALSE,all.y=FALSE,by="Genes")
+
+
+cts<-as.data.frame(datos[,-1])
+row.names(cts)<-datos[,1]
+
+Sample<-names(datos)[-1]
+
+##########################################################################################
+
+#samplefiles <-grep("*.txt", list.files(directory), value=TRUE)
+#samplefiles
+
+### DEfinimos variables
+
+# Cell (Variables "Axon" "Retina")
+Cell<-c(rep("Axon",3),rep("Retina",3),rep("Axon",6),rep("Retina",6),rep("Axon",2),rep("Retina",3))
+
+# Experiment (Variables "TRAP" "WT")
+Experiment<-c(rep("TRAP",6),rep("WT",12),rep("TRAP",5))
+
+# Lateralidad (Variables "IL"Ipsilaterales "CL"Contralaterales)
+Lateralidad <-c(rep("CL_Brn3b",9),rep("IL_Sert",3),rep("CL_Brn3b",3),rep("IL_Sert",8))
+
+###################################################################################################
+coldata<-data.frame(Experiment=Experiment,Cell=Cell,Lateralidad=Lateralidad,row.names=Sample)
+
+group <- factor(rep("Axon.Tecnica",3), rep("Retina.Tecnica",3),rep("Axon.Control",6),rep("Retina.Control",6),rep("Axon.Tecnica",3),rep("Retina.Tecnica",3))
+
+#coldata<-data.frame(group=group,Lateralidad=Lateralidad,row.names=Sample)
+
+library("DESeq2")
+
+group2 <- c(rep("Axon.TRAP.CL",3), rep("Retina.TRAP.CL",3),rep("Axon.Control.CL",3),rep("Axon.Control.IL",3),rep("Retina.Control.CL",3),rep("Retina.Control.IL",3), rep("Axon.TRAP.IL",2), rep("Retina.TRAP.IL",3)) 
+coldata<-data.frame(group2=group2,row.names=Sample)
+
+dds <- DESeqDataSetFromMatrix(countData=cts,colData=coldata,design=~group2)
+
+#####################################   
+dds <- DESeq(dds)
+dds <- dds[ rowSums(counts(dds)) > 1, ]
+ resultsNames(dds) ## group2
+[1] "Intercept"               "group2Axon.Control.CL"  
+[3] "group2Axon.Control.IL"   "group2Axon.TRAP.CL"     
+[5] "group2Axon.TRAP.IL"      "group2Retina.Control.CL"
+[7] "group2Retina.Control.IL" "group2Retina.TRAP.CL"   
+[9] "group2Retina.TRAP.IL"
+
+res <- results(dds, contrast=list("group2Retina.Tecnica.IL","group2Retina.Tecnica.CL"))
+write.csv(res,"listaDEG_RetinaTecnica_ILvsCL.csv")
+log2 fold change (MAP): group2Retina.Tecnica.IL vs group2Retina.Tecnica.CL 
+Wald test p-value: group2Retina.Tecnica.IL vs group2Retina.Tecnica.CL 
+DataFrame with 6 rows and 6 columns
+                       baseMean log2FoldChange     lfcSE       stat
+                      <numeric>      <numeric> <numeric>  <numeric>
+ENSMUSG00000000001 5.845738e+03     -0.5965682 0.1908518 -3.1258194
+ENSMUSG00000000003 0.000000e+00             NA        NA         NA
+ENSMUSG00000000028 9.275818e+02      1.6888955 0.4935030  3.4222600
+ENSMUSG00000000031 2.376731e+04      0.3567841 0.4533445  0.7870043
+ENSMUSG00000000037 1.597657e+02      0.7998748 0.6741414  1.1865090
+ENSMUSG00000000049 5.181254e-01      0.0000000 0.3510846  0.0000000
+                         pvalue        padj
+                      <numeric>   <numeric>
+ENSMUSG00000000001 0.0017731038 0.011453874
+ENSMUSG00000000003           NA          NA
+ENSMUSG00000000028 0.0006210289 0.004766322
+ENSMUSG00000000031 0.4312793698 0.671282003
+ENSMUSG00000000037 0.2354213666 0.471174780
+ENSMUSG00000000049           NA          NA
+
+res2 <- results(dds, contrast=list("group2Retina.Control.IL","group2Retina.Control.CL"))
+write.csv(res2,"listaDEG_RetinaControl_ILvsCL.csv")
+
+###########################################################################3
+res <- results(dds, contrast=list("group2Axon.TRAP.IL","group2Axon.TRAP.CL"))
+head(res)
+log2 fold change (MAP): group2Axon.Tecnica.IL vs group2Axon.Tecnica.CL 
+Wald test p-value: group2Axon.Tecnica.IL vs group2Axon.Tecnica.CL 
+DataFrame with 6 rows and 6 columns
+                       baseMean log2FoldChange     lfcSE         stat    pvalue
+                      <numeric>      <numeric> <numeric>    <numeric> <numeric>
+ENSMUSG00000000001 5.845738e+03     0.03739972 0.1914288  0.195371473 0.8451021
+ENSMUSG00000000003 0.000000e+00             NA        NA           NA        NA
+ENSMUSG00000000028 9.275818e+02    -0.54357641 0.4948234 -1.098525970 0.2719749
+ENSMUSG00000000031 2.376731e+04     0.52416944 0.4533317  1.156260174 0.2475748
+ENSMUSG00000000037 1.597657e+02     0.00211864 0.6750498  0.003138494 0.9974958
+ENSMUSG00000000049 5.181254e-01     0.00000000 0.3493113  0.000000000        NA
+                        padj
+                   <numeric>
+ENSMUSG00000000001 0.9827575
+ENSMUSG00000000003        NA
+ENSMUSG00000000028 0.7283999
+ENSMUSG00000000031 0.7021700
+ENSMUSG00000000037 1.0000000
+ENSMUSG00000000049        NA
+write.csv(res,"listaDEG_AxonTRAP_ILvsCL.csv")
+###########################################################################
+
+#####################################   
+dds <- DESeq(dds)
+dds <- dds[ rowSums(counts(dds)) > 1, ]
+ resultsNames(dds) ## group2
+[1] "Intercept"               "group2Axon.Control.CL"  
+[3] "group2Axon.Control.IL"   "group2Axon.TRAP.CL"     
+[5] "group2Axon.TRAP.IL"      "group2Retina.Control.CL"
+[7] "group2Retina.Control.IL" "group2Retina.TRAP.CL"   
+[9] "group2Retina.TRAP.IL"
+
+res1 <- results(dds, contrast=list("group2Retina.TRAP.CL","group2Retina.Control.CL"))
+write.csv(res1,"listaDEG_RetinaCLBrn3b_TRAPvsCtrl.csv")
+
+res2 <- results(dds, contrast=list("group2Axon.TRAP.CL","group2Axon.Control.CL"))
+write.csv(res2,"listaDEG_AxonCLBrn3b_TRAPvsCtrl.csv")
+
+res3 <- results(dds, contrast=list("group2Retina.TRAP.IL","group2Retina.Control.IL"))
+write.csv(res3,"listaDEG_RetinaILSert_TRAPvsCtrl.csv")
+
+res4 <- results(dds, contrast=list("group2Axon.TRAP.IL","group2Axon.Control.IL"))
+write.csv(res4,"listaDEG_AxonILSert_TRAPvsCtrl.csv")
+####################################################################################################
+
+library("GenomicAlignments")
+library("BiocParallel")
+library("DESeq2")
+library("GenomicFeatures")
+Biocpkg("genefilter")
+library(genefilter)
+library(BiocStyle)
+library(rmarkdown)
+library(geneplotter)
+library(ggplot2)
+library(plyr)
+library(LSD)
+library(DESeq2)
+library(gplots)
+library(RColorBrewer)
+library(stringr)
+library(topGO)
+library(genefilter)
+library(biomaRt)
+library(dplyr)
+library(EDASeq)
+library(fdrtool)
+library(org.Mm.eg.db)
+library(topGO)
+library(genefilter)
+
+##############################################################################################################
+
+results(dds, contrast=list("LateralidadIpsilaterales.TecnicaTecnica","LateralidadContralaterales.TecnicaTecnica"))
+
+#################################################################################################3
+GeneCounts <- counts(dds)
+dim(GeneCounts) #todos los genes!
+idx.nz <- apply(GeneCounts, 1, function(x) { all(x > 0)})
+sum(idx.nz)
+head(idx.nz) #todos los genes con reads en todas las muestras!
+
+GeneCounts.norm <- round(counts(dds,normalized=TRUE),2) 
+head(GeneCounts.norm)
+
+
+normal_counts <- GeneCounts.norm
+###normal_counts <- t(t(counts(dds))/sizeFactors)
+colnames(normal_counts)[1] <- "19_norm"
+colnames(normal_counts)[2] <- "20_norm"
+colnames(normal_counts)[3] <- "21_norm"
+colnames(normal_counts)[4] <- "11_norm"
+colnames(normal_counts)[5] <- "12_norm"
+colnames(normal_counts)[6] <- "13_norm"
+colnames(normal_counts)[7] <- "26_norm"
+colnames(normal_counts)[8] <- "27_norm"
+colnames(normal_counts)[9] <- "28_norm"
+colnames(normal_counts)[10]<-"HTP51_norm"
+colnames(normal_counts)[11]<-"HTP52_norm"
+colnames(normal_counts)[12]<-"HTP53_norm"
+colnames(normal_counts)[13] <- "23_norm"
+colnames(normal_counts)[14] <- "24_norm"
+colnames(normal_counts)[15] <- "25_norm"
+colnames(normal_counts)[16]<-"HTP45_norm"
+colnames(normal_counts)[17]<-"HTP46_norm"
+colnames(normal_counts)[18]<-"HTP47_norm"
+colnames(normal_counts)[19]<-"HTP54_norm"
+colnames(normal_counts)[20]<-"HTP55_norm"
+colnames(normal_counts)[21]<-"HTP56_norm"
+colnames(normal_counts)[22]<-"HTP48_norm"
+colnames(normal_counts)[23]<-"HTP49_norm"
+colnames(normal_counts)[24]<-"HTP50_norm"
+head(normal_counts)
+normal_counts <- data.frame(normal_counts)
+
+
+DESeq2Table <- estimateSizeFactors(dds)
+dds1.norm <- estimateDispersions(DESeq2Table)
+
+# Perform the test for diferential expression, using nbinomTest
+DESeq2Table2 <- nbinomWaldTest(dds1.norm)
+DESeq2Res <- results(DESeq2Table2, pAdjustMethod = "BH")
+
+	# Save data results and normalized reads to csv table
+
+write.csv(as.data.frame(resdata1),file="counts.csv")
+resdata1 <- merge(as.data.frame(GeneCounts), as.data.frame(normal_counts), by='row.names',sort=F,all.x=T)
+names(resdata1)[1] <- 'genes'
+head(resdata1)
+
+df<-data.frame(rownames(DESeq2Res),DESeq2Res)
+colnames(df)[1]="genes"
+resdata2 <- as.data.frame(df)
+write.csv(as.data.frame(resdata2),file="results.csv")
+head(df)
+
+genestotales <- merge(df,resdata1, by='genes',sort=F,all.x=T)
+write.csv(as.data.frame(genestotales),file="lista_final_KOvsWT.csv")
+
+
+
+
+write.csv(as.data.frame(res), file = "results_DESeq2.csv")
+rld<- rlog(dds, contrast=list("LateralidadIpsilaterales.TecnicaTecnica","LateralidadContralaterales.TecnicaTecnica"))
+
+rld <- rlog(dds,blind=FALSE)
+rld_dataframe <-data.frame(rownames(assay(rld)),assay(rld))
+colnames(rld_dataframe)[1]="genes"
+head(rld_dataframe)
+head(rld_dataframe)[1]
+
+colnames(rld_dataframe)[2] <- "rld19_norm"
+colnames(rld_dataframe)[3] <- "rld20_norm"
+colnames(rld_dataframe)[4] <- "rld21_norm"
+colnames(rld_dataframe)[5] <- "rld11_norm"
+colnames(rld_dataframe)[6] <- "rld12_norm"
+colnames(rld_dataframe)[7] <- "rld13_norm"
+colnames(rld_dataframe)[8] <- "rld26_norm"
+colnames(rld_dataframe)[9] <- "rld27_norm"
+colnames(rld_dataframe)[10] <- "rld28_norm"
+colnames(rld_dataframe)[11]<-"rldHTP51_norm"
+colnames(rld_dataframe)[12]<-"rldHTP52_norm"
+colnames(rld_dataframe)[13]<-"rldHTP53_norm"
+colnames(rld_dataframe)[14] <- "rld23_norm"
+colnames(rld_dataframe)[15] <- "rld24_norm"
+colnames(rld_dataframe)[16] <- "rld25_norm"
+colnames(rld_dataframe)[17]<-"rldHTP45_norm"
+colnames(rld_dataframe)[18]<-"rldHTP46_norm"
+colnames(rld_dataframe)[19]<-"rldHTP47_norm"
+colnames(rld_dataframe)[20]<-"rldHTP54_norm"
+colnames(rld_dataframe)[21]<-"rldHTP55_norm"
+colnames(rld_dataframe)[22]<-"rldHTP56_norm"
+colnames(rld_dataframe)[23]<-"rldHTP48_norm"
+colnames(rld_dataframe)[24]<-"rldHTP49_norm"
+colnames(rld_dataframe)[25]<-"rldHTP50_norm"
+
+write.csv(as.data.frame(rld_dataframe),file="rlog_rld_results_Cell_tyoe.csv")
+genestotales1 <- merge(resdata1,rld_dataframe, by='genes',sort=F,all.x=T)
+names(resdata1)[1] <- 'genes'
+res$genes <- rownames(res)
+res2$genes <- rownames(res2)
+genestotales2 <- merge(genestotales1,as.data.frame(res), by='genes',sort=F,all.x=T)
+genestotales3 <- merge(genestotales1,as.data.frame(res2), by='genes',sort=F,all.x=T)
+write.csv(as.data.frame(genestotales2),file="lista_Retina.Tecnica.IL_vs_Retina.Tecnica.CL.csv")
+write.csv(as.data.frame(genestotales3),file="lista_Retina.Control.IL_vs_Retina.Control.CL.csv")
+
+
+write.csv(as.data.frame(genestotales2),file="lista_Axon.TRAP.IL_vs_Axon.TRAP.CL.csv")
+
+
+genestotalesBT <- merge(genestotales1,rld_dataframe, by='genes',sort=F,all.x=T)
+genestotalesBT <- merge(genestotalesBT,res_Brn3bTRAP, by='genes',sort=F,all.x=T)
+write.csv(as.data.frame(genestotales1),file="listaBT.csv")
+
+genestotalesST <- merge(genestotales1,rld_dataframe, by='genes',sort=F,all.x=T)
+genestotalesST  <- merge(genestotalesST ,res_SertTRAP, by='genes',sort=F,all.x=T)
+write.csv(as.data.frame(genestotales1),file="listaST.csv")
+
+genestotalesCell <- merge(genestotales1,rld_dataframe, by='genes',sort=F,all.x=T)
+genestotalesCell  <- merge(genestotalesCell ,res_Cell, by='genes',sort=F,all.x=T)
+write.csv(as.data.frame(genestotales1),file="listaCell.csv")
+
+genestotalesCellType <- merge(genestotales1,rld_dataframe, by='genes',sort=F,all.x=T)
+genestotalesCellType  <- merge(genestotalesCellType ,Deseq2Res, by='genes',sort=F,all.x=T)
+write.csv(as.data.frame(genestotalesCellType),file="listaCelltype.csv")
+
+
+cds = estimateDispersions(dds )
+vsdFull = varianceStabilizingTransformation( cds )
+
+pdf("PCA.pdf")
+print(plotPCA(vsdFull, intgroup=c("Cell_type", "Cell")))
+dev.off()
+#In this case, we see not only that the samples cluster by genotype and genetic background but also that PC1 represents genetic #background, and PC2 seems to represent wt vs. mutant genotype.
+
+anno <- read.csv("annotationMusmu.csv")
+merge <- merge(genestotales1,anno, by='genes', sort=F, all.x=T)
+merge1 <- merge[!duplicated(merge$genes),]
+write.csv(merge1,"lista_ILvsCL_AxonTRAP.csv")
+
+merge2 <- merge(tec,anno, by='genes', sort=F, all.x=T)
+merge3 <- merge2[!duplicated(merge2$genes),]
+write.csv(merge3,"lista_ILvsCL_RetinaTecnica.csv")
+
