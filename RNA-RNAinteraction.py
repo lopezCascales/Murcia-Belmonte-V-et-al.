@@ -319,3 +319,144 @@ for r in sorted(sig, key=lambda x: x['zscore'])[:10]:
 print(f"\nSaved: {out}")
 print(f"Total: {(time.time()-t0)/60:.1f} min")
 print("\nNext: merge with zscore_full_results.csv and run plot_new_lncrnas.R")
+
+
+
+#####################################################################################
+
+### Less than 200 nt
+
+#!/usr/bin/env python3
+"""
+RNA-RNA interaction Z-score using RNAup (ViennaRNA 2.4.17)
+Reference: Mrozowich et al. 2023 NAR
+
+Both query and target truncated for speed:
+  - Query lncRNA: first 200nt (5' end)
+  - Target 3'UTR: first 1000nt (proximal to stop codon)
+RNAup complexity is O(query * target^2), so both must be short.
+
+Run from ~/LABMEMBERS/MAYTE/
+  python3 outputs/rna_zscore_rnaup.py
+"""
+import subprocess, re, random, csv, time
+from pathlib import Path
+
+OUTDIR      = Path("outputs/rna_interactions")
+N_SHUF      = 5       ## screening — validate hits with dinuc after
+TIMEOUT     = 20      ## 20s: sufficient for 200nt x 1000nt
+Q_TRUNC     = 200     ## lncRNA query truncation (nt)
+T_TRUNC     = 1000    ## target 3'UTR truncation (nt)
+random.seed(42)
+
+NEW_LNCRNAS = {
+    "Kcnq1ot1":   "lncAC",
+    "Mir9-3hg":   "lncAC",
+    "Rpph1":      "lncAI",   ## 319nt — used as-is
+    "Arhgap20os": "lncAI",
+}
+
+KEY_TARGETS = [
+    "Rgs7bp", "Plxna4", "Gda",    "Tenm2",
+    "Ago3",   "Smg1",   "Grin2b", "Plxna1",
+    "Ago2",   "Nova1",
+]
+
+def read_and_trunc(path, max_len):
+    lines = Path(path).read_text().strip().split('\n')
+    seq = ''.join(l for l in lines
+                  if not l.startswith('>')).upper().replace('T','U')
+    return seq[:max_len] if len(seq) > max_len else seq
+
+def run_rnaup(q_seq, t_seq):
+    try:
+        r = subprocess.run(
+            ['RNAup', '-b'],
+            input=f"{q_seq}\n{t_seq}\n",
+            capture_output=True, text=True, timeout=TIMEOUT
+        )
+        for line in r.stdout.split('\n'):
+            m = re.search(r'\((-[\d.]+)\s*=', line)
+            if m:
+                return float(m.group(1))
+        return 0.0
+    except subprocess.TimeoutExpired:
+        return 0.0
+
+def mono_shuffle(seq):
+    lst = list(seq); random.shuffle(lst); return ''.join(lst)
+
+def zscore(q_seq, t_seq):
+    real = run_rnaup(q_seq, t_seq)
+    bg = [run_rnaup(q_seq, mono_shuffle(t_seq)) for _ in range(N_SHUF)]
+    mu  = sum(bg) / N_SHUF
+    std = (sum((x-mu)**2 for x in bg) / N_SHUF) ** 0.5
+    z   = (real - mu) / std if std > 0 else 0.0
+    return real, mu, std, z, "p<0.05" if z < -1.96 else "n.s."
+
+def get_fa(name):
+    for n in [name, name.lower()]:
+        for suf in ["_3utr", ""]:
+            fa = OUTDIR/f"{n}{suf}.fa"
+            if fa.exists(): return fa
+    return None
+
+import pandas as pd
+group_map = {}
+csv_path = Path("outputs/rna_interactions/zscore_full_results.csv")
+if csv_path.exists():
+    df = pd.read_csv(csv_path)
+    group_map = df.drop_duplicates('target').set_index('target')['group'].to_dict()
+
+print("="*65)
+print("RNAup Z-score — query 200nt x target 1000nt")
+print(f"N={N_SHUF} shuffles | {len(KEY_TARGETS)} targets | timeout={TIMEOUT}s")
+print("="*65)
+
+## Quick sanity test with short sequences
+test_e = run_rnaup("AUCGAUCGAUCG", "CGAUCGAUCGAU")
+print(f"Parser test: {test_e:.2f} kcal/mol")
+
+## Estimate time
+print(f"\nEst. time: ~{(N_SHUF+1) * len(KEY_TARGETS) * len(NEW_LNCRNAS) * 5 // 60} min")
+print()
+
+results = []
+t0 = time.time()
+
+for lnc_name, lnc_class in NEW_LNCRNAS.items():
+    q_fa = OUTDIR / f"{lnc_name}.fa"
+    if not q_fa.exists():
+        print(f"SKIP {lnc_name}: not found"); continue
+
+    q_seq = read_and_trunc(q_fa, Q_TRUNC)
+    print(f"\n--- {lnc_name} ({lnc_class}) | query={len(q_seq)}nt ---")
+    n_sig = 0
+
+    for target in KEY_TARGETS:
+        t_fa = get_fa(target)
+        if not t_fa: continue
+        t_seq = read_and_trunc(t_fa, T_TRUNC)
+        t1 = time.time()
+        real, mu, std, z, p = zscore(q_seq, t_seq)
+        elapsed = time.time()-t1
+        sig = "**" if z < -2 else "  "
+        grp = group_map.get(target,"?")
+        print(f"  {sig}{target:<14} Z={z:+.2f}  {p:<8} [{grp}]  ({elapsed:.0f}s)")
+        if z < -2: n_sig += 1
+        results.append(dict(
+            query=lnc_name, lnc_class=lnc_class, target=target,
+            real_e=round(real,3), bg_mean=round(mu,3), bg_std=round(std,3),
+            zscore=round(z,3), pval=p, group=grp,
+            specific=z<-2.0, tool="RNAup",
+            q_len=len(q_seq), t_len=len(t_seq)
+        ))
+    print(f"  -> {n_sig}/{len(KEY_TARGETS)} significant")
+
+out = Path("outputs/rna_interactions/zscore_new_lncrnas_results.csv")
+if results:
+    with open(out,'w',newline='') as f:
+        w = csv.DictWriter(f, fieldnames=list(results[0].keys()))
+        w.writeheader(); [w.writerow(r) for r in results]
+    print(f"\nSaved: {out}")
+    print(f"Total: {(time.time()-t0)/60:.1f} min")
